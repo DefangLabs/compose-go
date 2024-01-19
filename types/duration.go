@@ -17,17 +17,14 @@
 package types
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 )
 
 // Duration is a thin wrapper around time.Duration with improved JSON marshalling
-type Duration time.Duration
-
-func (d Duration) String() string {
-	return time.Duration(d).String()
+type Duration struct {
+	time.Duration
 }
 
 func (d *Duration) DecodeMapstructure(value interface{}) error {
@@ -35,13 +32,8 @@ func (d *Duration) DecodeMapstructure(value interface{}) error {
 	if err != nil {
 		return err
 	}
-	*d = Duration(v)
+	*d = Duration{v}
 	return nil
-}
-
-// MarshalJSON makes Duration implement json.Marshaler
-func (d Duration) MarshalJSON() ([]byte, error) {
-	return json.Marshal(d.String())
 }
 
 // MarshalYAML makes Duration implement yaml.Marshaler
@@ -55,6 +47,6 @@ func (d *Duration) UnmarshalJSON(b []byte) error {
 	if err != nil {
 		return err
 	}
-	*d = Duration(timeDuration)
+	*d = Duration{timeDuration}
 	return nil
 }
